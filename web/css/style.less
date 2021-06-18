@@ -1,0 +1,271 @@
+* {
+    margin    : 0;
+    padding   : 0;
+    box-sizing: border-box;
+}
+
+// 导入字体
+@font-face {
+    font-family: electronicFont;
+    src        : url(../font/DS-DIGIT.TTF);
+}
+
+// 滚动条样式
+::-webkit-scrollbar {
+    width           : 10px; //定义滚动条宽度
+    height          : 10px; //定义滚动条高度
+    border-radius   : 10px; //定义滚动条圆角
+    background-color: rgba(240, 240, 240, 0.1); //定义滚动条颜色
+}
+
+// 轨道样式
+::-webkit-scrollbar-track {
+    box-shadow      : inset 0 0 0px rgba(240, 240, 240, .5); //定义轨道阴影
+    border-radius   : 10px; //定义轨道圆角
+    background-color: rgba(185, 164, 164, 0.5); //定义轨道颜色 
+}
+
+// 滑块样式
+::-webkit-scrollbar-thumb {
+    border-radius   : 10px; //定义滑块圆角
+    box-shadow      : inset 0 0 0px rgba(240, 240, 240, .5); //定义滑块阴影
+    background-color: rgba(29, 165, 255, 0.767); //定义滑块颜色
+}
+
+html {
+    // 为了使rem生效，这里要设置根节点的font-size为1rem的大小
+    font-size: 80px;
+}
+
+// 头部盒子
+header {
+    position        : relative;
+    width           : 100%;
+    height          : 1rem;
+    background-color: white;
+    color           : #4D79F3;
+
+    // 页面标题组件
+    h1 {
+        font-size  : .4rem;
+        line-height: 1rem;
+        text-align : center;
+    }
+
+    // 当前时间组件
+    .showTime {
+        position   : absolute;
+        top        : 0;
+        right      : .625rem;
+        line-height: 1rem;
+        text-align : center;
+
+        font-size: .2.5rem;
+        color    : #777;
+    }
+}
+
+// 内容盒子
+.content {
+    display         : flex;
+    min-width       : 1024px;
+    max-width       : 1920px;
+    margin          : 0 auto;
+    padding         : .125rem .125rem 0rem;
+    background-color: cadetblue;
+
+    // 内容部分的三列样式
+    .column {
+        flex: 3;
+    }
+
+    // 防疫动画
+    .videoBox {
+        position: relative;
+        video {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+    }
+
+    // 地图模块列
+    .column:nth-child(2) {
+        flex    : 5;
+        margin  : 0 .125rem .125rem;
+        overflow: hidden; // 隐藏子元素超出的部分
+    }
+
+    // 热点新闻模块样式
+    .new {
+        padding         : .25rem;
+        background-color: antiquewhite;
+
+        // 热点新闻标题
+        .newTitle {
+            padding-top: .125rem;
+            color      : #4D79F3;
+            font-weight: bold;
+            font-size  : .3rem;
+        }
+
+        // 热点新闻列表
+        .newList {
+            height     : 95%;
+            overflow-y : scroll;
+            overflow-x : none;
+            padding-top: .125rem;
+
+            ul {
+                // background-color: cadetblue;
+                // padding: .125rem;
+
+                li {
+                    list-style  : none;
+                    font-size   : .225rem;
+                    line-height : .375rem;
+                    padding-left: .125rem;
+                    // border      : chocolate 1px solid;
+                    transition  : 0.2s ease-in-out;
+
+                    a {
+                        text-decoration: none;
+                        color: #777;
+                        width: 4.75rem;
+                        display      : block;
+                        overflow     : hidden;
+                        white-space  : nowrap;
+                        text-overflow: ellipsis;
+
+                    }
+                }
+
+                li:hover {
+                    font-size       : .3rem;
+                    background-color: cornsilk;
+                }
+            }
+        }
+    }
+
+    // 每个小面板的样式
+    .panel {
+        width           : 100%;
+        height          : 3.9375rem;
+        background-color: #fff;
+        padding         : 0 .1875rem .5rem;
+        margin-bottom   : .1875rem;
+        border-radius   : .125rem .125rem;
+        box-shadow      : 0 8px 8px rgba(10, 16, 20, .24), 0 0 8px rgba(10, 16, 20, .12);
+    }
+
+    // .map-title {
+    //     display         : flex;
+    //     width           : 100%;
+    //     text-align      : center;
+    //     height          : 2rem;
+    //     background-color: cornsilk;
+    //     box-shadow      : 0 8px 8px rgba(10, 16, 20, .24), 0 0 8px rgba(10, 16, 20, .12);
+    //     border-radius: .125rem .125rem;
+    // }
+
+    // 消息栏标题
+    .details {
+        background-color: white;
+        border-radius   : .125rem .125rem;
+        box-shadow      : 0 8px 8px rgba(10, 16, 20, .24), 0 0 8px rgba(10, 16, 20, .12);
+
+        // 消息栏标题
+        .title {
+            display     : inline-block;
+            font-size   : .3rem;
+            color       : #4D79F3;
+            line-height : .3rem;
+            margin-right: .125rem;
+            margin-left : .125rem;
+            padding-top : .0625rem;
+        }
+
+        // 信息栏数据获取日期组件
+        .time {
+            display    : inline-block;
+            font-size  : .175rem;
+            color      : #777;
+            line-height: .3rem;
+        }
+
+        // 信息栏内容
+        .info {
+            display       : flex;
+            flex-wrap     : wrap;
+            flex-direction: row;
+            padding-top   : .125rem;
+
+            .info_item {
+                width        : 25%;
+                text-align   : center;
+                margin-bottom: .125rem;
+                position     : relative;
+
+                h5 {
+                    font-size  : .2rem;
+                    line-height: .40rem;
+                }
+
+                // 较昨日字体样式
+                .jzr {
+                    display  : inline;
+                    color    : #999999;
+                    font-size: .2rem;
+                }
+            }
+        }
+    }
+
+    // 选择栏
+    .chose {
+        width           : 100%;
+        margin          : .125rem 0 .125rem 0;
+        background-color: #fff;
+        height          : .6rem; //48px
+        border-radius   : .125rem .125rem;
+        box-shadow      : 0 8px 8px rgba(10, 16, 20, .24), 0 0 8px rgba(10, 16, 20, .12);
+        text-align      : center;
+
+        div {
+            overflow        : hidden;
+            display         : inline-block;
+            width           : 49.5%;
+            line-height     : .6rem;
+            height          : .6rem;
+            font-size       : .3rem;
+            color           : #999999;
+            font-weight     : bold;
+            // border-radius: .25rem;
+        }
+
+        .click {
+            color: #4D79F3;
+        }
+    }
+
+    // 地图盒子
+    .map {
+        // height          : 8.9rem;
+        height       : 8.15rem;
+        margin-top   : .125rem;
+        border-radius: 15px 15px;
+        overflow     : hidden;
+        box-shadow   : 0 8px 8px rgba(10, 16, 20, .24), 0 0 8px rgba(10, 16, 20, .12);
+    }
+
+    .map2 {
+        background-color: white;
+        height          : 9.5rem;
+        margin-top      : .125rem;
+        border-radius   : 15px 15px;
+        overflow        : hidden;
+        box-shadow      : 0 8px 8px rgba(10, 16, 20, .24), 0 0 8px rgba(10, 16, 20, .12);
+    }
+}

@@ -1,0 +1,19 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="COVID-19:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/COVID_19_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="COVID-19" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/libs/jsp-api.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/libs/servlet-api.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/libs/fastjson-1.2.59.jar" />
+          <element id="file-copy" path="$PROJECT_DIR$/web/WEB-INF/libs/mariadb-java-client-2.7.3.jar" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="COVID-19/web/Web" />
+    </root>
+  </artifact>
+</component>
