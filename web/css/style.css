@@ -58,7 +58,12 @@ header .showTime {
 .content .column {
   flex: 3;
 }
+.content .column:nth-child(1) .panel:nth-child(1) {
+  background-color: #E7E7E7;
+}
 .content .videoBox {
+  height: 100%;
+  width: 100%;
   position: relative;
 }
 .content .videoBox video {
@@ -73,17 +78,18 @@ header .showTime {
   overflow: hidden;
 }
 .content .new {
-  padding: 0.25rem;
+  padding-right: 0.125rem;
+  padding-left: 0.125rem;
   background-color: antiquewhite;
 }
 .content .new .newTitle {
-  padding-top: 0.125rem;
+  padding-top: 0.0625rem;
   color: #4D79F3;
   font-weight: bold;
   font-size: 0.3rem;
 }
 .content .new .newList {
-  height: 95%;
+  height: 85%;
   overflow-y: scroll;
   overflow-x: none;
   padding-top: 0.125rem;
@@ -109,12 +115,13 @@ header .showTime {
   background-color: cornsilk;
 }
 .content .panel {
+  overflow: hidden;
   width: 100%;
   height: 3.9375rem;
   background-color: #fff;
-  padding: 0 0.1875rem 0.5rem;
+  padding: 0.0625rem;
   margin-bottom: 0.1875rem;
-  border-radius: 0.125rem 0.125rem;
+  border-radius: 0.125rem 0.125rem 0.125rem 0.125rem;
   box-shadow: 0 8px 8px rgba(10, 16, 20, 0.24), 0 0 8px rgba(10, 16, 20, 0.12);
 }
 .content .details {

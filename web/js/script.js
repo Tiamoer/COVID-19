@@ -1,113 +1,22 @@
+// JQuery的Ajax请求方式
 $.ajax({
+    // 新浪的疫情数据接口 返回的是jsonp格式的数据
     url: "https://news.sina.com.cn/project/fymap/ncp2020_full_data.json",
     dataType: "jsonp",
     jsonpCallback: 'jsoncallback',
     success: function (response) {
-
         // 获取数据
         var allData = response.data;
         console.log(allData);
-
         // 设置数据的获取时间
         var cachetime = allData.cachetime;
         $('.time span').html(cachetime);
-
-        // 折线图
-        (function () {
-            var chartDom = document.getElementById('line');
-            var myChart = echarts.init(chartDom);
-            var option;
-
-            option = {
-                // title: {
-                //     text: '折线图'
-                // },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data: ['数据1', '数据2', '数据3', '数据4'],
-                    top: 15
-                },
-                grid: {
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    containLabel: true
-                },
-                xAxis: {
-                    type: 'category',
-                    boundaryGap: false,
-                    data: ['日期1', '日期2', '日期3', '日期4', '日期5', '日期6', '日期7'],
-                },
-                yAxis: {
-                    type: 'value'
-                },
-                series: [
-                    {
-                        name: '数据1',
-                        type: 'line',
-                        stack: '总量',
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: '数据2',
-                        type: 'line',
-                        stack: '总量',
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: '数据3',
-                        type: 'line',
-                        stack: '总量',
-                        data: [150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: '数据4',
-                        type: 'line',
-                        stack: '总量',
-                        data: [320, 332, 301, 334, 390, 330, 320]
-                    },
-                ]
-            };
-
-            option && myChart.setOption(option);
-        })();
-
-        // 饼图
-        (function () {
-            var chartDom = document.getElementById('pie');
-            var pie = echarts.init(chartDom);
-            var option;
-
-            option = {
-                legend: {
-                    top: 'bottom'
-                },
-                series: [
-                    {
-                        name: '面积模式',
-                        type: 'pie',
-                        radius: [0, 50],
-                        center: ['50%', '50%'],
-                        roseType: 'area',
-                        itemStyle: {
-                            borderRadius: 8
-                        },
-                        data: [
-                            { value: 40, name: '数据1' },
-                            { value: 38, name: '数据2' },
-                            { value: 32, name: '数据3' },
-                            { value: 30, name: '数据4' },
-                        ]
-                    }
-                ]
-            };
-
-            option && pie.setOption(option);
-
-        })();
-
+        // 折线图-
+        showLine(allData);
+        // 饼图-
+        showPie(allData);
+        // 柱状图-境外输入排行榜展示
+        showBar(allData);
         // 国内外数据展示
         (function () {
             showChinaInfo(allData);
@@ -128,78 +37,6 @@ $.ajax({
             });
         })();
 
-        // 境外输入排行榜展示
-        (function () {
-            // 获取境外输入派上榜信息
-            var jwsr_data = allData.jwsrTop;
-            // 字典存数据据
-            var jwsrName = [];
-            var jwsrValue = [];
-            // 境外输入总人数
-            // var jwsrconNum = allData.historylist[0]['cn_jwsrNum']
-            // jwsrName.push("总输入");
-            // jwsrValue.push(jwsrconNum);
-            var i = 1;
-            try {
-                jwsr_data.forEach(element => {
-                    if (i <= 5) {
-                        jwsrName.push(element.name);
-                        jwsrValue.push(element.jwsrNum);
-                        i++;
-                    } else {
-                        throw new Error("EndIterative");
-                    }
-                });
-            } catch (error) {
-                if (error.message !== "EndIterative") throw error;
-            };
-            // 倒置两个数组元素的顺序
-            jwsrName.reverse();
-            jwsrValue.reverse();
-            // 图表设置
-            var jwsrTop = echarts.init(document.getElementById('jwsr_top'));
-            var option = {
-                title: {
-                    text: '境外输入人数地区TOP5',
-                    left: 'center',
-                    top: 20
-                },
-                grid: {
-                    left: 50,
-                    bottom: 17
-                },
-                legend: {
-                    data: ['人数'],
-                    left: 'left',
-                    top: 30
-                },
-                xAxis: {
-                    type: 'value',
-                    boundaryGap: [0, 0.01]
-                },
-                yAxis: {
-                    type: 'category',
-                    data: jwsrName,
-                    nameTextStyle: {
-                        fontSize: 5,
-                        lineHeight: 56
-                    }
-                },
-                series: [
-                    {
-                        name: '人数',
-                        type: 'bar',
-                        data: jwsrValue,
-                        label: {
-                            show: 'true',
-                            position: 'right'
-                        }
-                    }
-                ]
-            }
-            jwsrTop.setOption(option);
-        })();
-        
         // 新闻列表展示
         (function () {
             $.ajax({
@@ -208,30 +45,27 @@ $.ajax({
                 dataType: "json",
                 // async:false,
                 success: function (response) {
+                    console.log(response);
                     var newList = response;
                     var htmlStr = "";
                     console.log(newList);
                     newList.forEach(element => {
+                        // element -> k-v
                         htmlStr += `
                             <li><a href="${element['url']} target="view_window">${element['Content']}</a></li>
                         `
                     });
                     $('.newList > ul').html(htmlStr);
+                    // 新闻列表滚动动效
+                    newsStyle();
                 }
             });
         })();
 
-        // 新闻列表滚动动效
+        // 省份疫情数据展示
         (function () {
-                var $this = $(".newList");
-                var scrollTimer;
-                $this.hover(function () {
-                    clearInterval(scrollTimer);
-                }, function () {
-                    scrollTimer = setInterval(function () {
-                        scrollNews($this);
-                    }, 2000);
-                }).trigger("mouseleave");
+            showCity(echarts.init(document.getElementById('map')), allData);
+            // initCityMap("北京");
         })();
     }
 })
@@ -346,16 +180,222 @@ function showWorldInfo(allData) {
     }
 }
 
+// 折线图
+function showLine(allData) {
+
+    // 获取世界疫情信息
+    var worldInfo = allData.otherhistorylist;
+    var date, certain = [], die = [], recure = [];
+    // 遍历获取日期、感染人数、死亡人数、治愈人数
+    worldInfo.forEach(element => {
+        date = element.date.replace(".", "-").replace(".", "-");
+        certain.push([date, element.certain]);
+        die.push([date, element.die]);
+        recure.push([date, element.recure]);
+    });
+
+    // 按时间顺序排序
+    certain.reverse();
+    die.reverse();
+    recure.reverse();
+
+    // 图表配置
+    var chartDom = document.getElementById('line');
+    var myChart = echarts.init(chartDom);
+    var option = {
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data: ['感染人数', '死亡人数', '治愈人数'],
+            top: 15
+        },
+        grid: {
+            left: 0,
+            right: 0,
+            bottom: 0,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            splitLine: {
+                show: false
+            }
+        },
+        yAxis: {
+            type: 'value'
+        },
+        dataZoom: {
+            type: 'inside',
+            start: 10,
+            end: 50
+
+        },
+        series: [
+            {
+                name: '感染人数',
+                type: 'line',
+                stack: '人数',
+                itemStyle: {
+                    normal: {
+                        color: '#FF3534',
+                        lineStyle: {
+                            color: '#FF3535'
+                        }
+                    }
+                },
+                data: certain
+            },
+            {
+                name: '死亡人数',
+                type: 'line',
+                stack: '人数',
+                itemStyle: {
+                    normal: {
+                        color: '#4B4B4B',
+                        lineStyle: {
+                            color: '#4B4B4B'
+                        }
+                    }
+                },
+                data: die
+            },
+            {
+                name: '治愈人数',
+                type: 'line',
+                stack: '人数',
+                itemStyle: {
+                    normal: {
+                        color: '#13B593',
+                        lineStyle: {
+                            color: '#13B593'
+                        }
+                    }
+                },
+                data: recure
+            }
+        ]
+    };
+    option && myChart.setOption(option);
+}
+
+// 饼图
+function showPie(allData) {
+    var chartDom = document.getElementById('pie');
+    var pie = echarts.init(chartDom);
+    var option;
+
+    option = {
+        legend: {
+            top: 'bottom'
+        },
+        series: [
+            {
+                name: '面积模式',
+                type: 'pie',
+                radius: [0, 50],
+                center: ['50%', '50%'],
+                roseType: 'area',
+                itemStyle: {
+                    borderRadius: 8
+                },
+                data: [
+                    { value: 40, name: '数据1' },
+                    { value: 38, name: '数据2' },
+                    { value: 32, name: '数据3' },
+                    { value: 30, name: '数据4' },
+                ]
+            }
+        ]
+    };
+
+    option && pie.setOption(option);
+}
+
+// 柱状图
+function showBar(allData) {
+    // 获取境外输入派上榜信息
+    var jwsr_data = allData.jwsrTop;
+    // 字典存数据据
+    var jwsrName = [];
+    var jwsrValue = [];
+    // 境外输入总人数
+    // var jwsrconNum = allData.historylist[0]['cn_jwsrNum']
+    // jwsrName.push("总输入");
+    // jwsrValue.push(jwsrconNum);
+    var i = 1;
+    try {
+        jwsr_data.forEach(element => {
+            if (i <= 5) {
+                jwsrName.push(element.name);
+                jwsrValue.push(element.jwsrNum);
+                i++;
+            } else {
+                throw new Error("EndIterative");
+            }
+        });
+    } catch (error) {
+        if (error.message !== "EndIterative") throw error;
+    };
+    // 倒置两个数组元素的顺序
+    jwsrName.reverse();
+    jwsrValue.reverse();
+    // 图表设置
+    var jwsrTop = echarts.init(document.getElementById('jwsr_top'));
+    var option = {
+        title: {
+            text: '境外输入人数地区TOP5',
+            left: 'center',
+            top: 10
+        },
+        grid: {
+            left: 50,
+            bottom: 17
+        },
+        legend: {
+            data: ['人数'],
+            left: 'left',
+            top: 30
+        },
+        xAxis: {
+            type: 'value',
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            data: jwsrName,
+            nameTextStyle: {
+                fontSize: 5,
+                lineHeight: 56
+            }
+        },
+        series: [
+            {
+                name: '人数',
+                type: 'bar',
+                data: jwsrValue,
+                label: {
+                    show: 'true',
+                    position: 'right'
+                }
+            }
+        ]
+    }
+    jwsrTop.setOption(option);
+}
+
 // 中国疫情地图
 function showChinaMap(allData) {
     var list = allData.list;
-    // 地图Dom
+    // echarts的初始化语句
     var mapDom = echarts.init(document.getElementById('map'));
+    // 让图表跟随父div的大小变化而变化
     window.addEventListener("resize", function () {
         mapDom.resize();
     });
-    // 中国疫情
+    // 中国今天疫情
     var nowList = [];
+    // 中国历史疫情数据
     var allList = [];
     list.forEach(element => {
         nowList.push({
@@ -367,8 +407,10 @@ function showChinaMap(allData) {
             value: element.value
         });
     });
+    // echarts配置项
     var china_option = {
         backgroundColor: '#fff',
+        // 悬浮窗
         tooltip: {
             show: 'true',
             trigger: 'item',
@@ -406,6 +448,7 @@ function showChinaMap(allData) {
         geo: {
             map: 'china',
             show: 'true',
+            // 地图视觉缩放比
             zoom: 1.2,
             label: {
                 show: true,
@@ -424,6 +467,7 @@ function showChinaMap(allData) {
             }
         ]
     }
+    // 为了防止多个图表之间造成数据混淆和配置混淆，在使用一个新的图表前，清除前面图表的缓存
     mapDom.clear();
     mapDom.setOption(china_option);
 }
@@ -708,6 +752,17 @@ function showWorldMap(allData) {
 }
 
 // 新闻列表滚动
+function newsStyle() {
+    var $this = $(".newList");
+    var scrollTimer;
+    $this.hover(function () {
+        clearInterval(scrollTimer);
+    }, function () {
+        scrollTimer = setInterval(function () {
+            scrollNews($this);
+        }, 2000);
+    }).trigger("mouseleave");
+}
 function scrollNews(obj) {
     var $self = obj.find("ul");
     var lineHeight = $self.find("li:first").height();
@@ -717,5 +772,228 @@ function scrollNews(obj) {
         $self.css({
             marginTop: 0
         }).find("li:first").appendTo($self);
+    })
+}
+
+// 省份疫情展示
+function showCity(mapDom, allData) {
+
+    // 获取所有的省份以及省份的疫情数据
+    var cityList = allData.list;
+    initCityMap("甘肃",cityList);
+    // 中国大地图的点击事件
+    mapDom.on('click', function (params) {
+        // 点击的省份
+        var chooseCity = params.name;
+        initCityMap(chooseCity, cityList);
+    })
+}
+
+function initCityMap(cityName, cityList) {
+    // 地名与文件名映射表
+    var city_name = {
+        "安徽": "anhui",
+        "澳门": "aomen",
+        "北京": "beijing",
+        "重庆": "chongqing",
+        "福建": "fujian",
+        "甘肃": "gansu",
+        "广东": "guangdong",
+        "广西": "guangxi",
+        "贵州": "guizhou",
+        "海南": "hainan",
+        "河北": "hebei",
+        "黑龙江": "heilongjiang",
+        "河南": "henan",
+        "湖北": "hubei",
+        "湖南": "hunan",
+        "江苏": "jiangsu",
+        "江西": "jiangxi",
+        "吉林": "jilin",
+        "辽宁": "liaoning",
+        "内蒙古": "neimenggu",
+        "宁夏": "ningxia",
+        "青海": "qinghai",
+        "山东": "shandong",
+        "上海": "shanghai",
+        "山西": "shanxi",
+        "陕西": "shanxi2",
+        "四川": "sichuan",
+        "台湾": "taiwan",
+        "天津": "tianjin",
+        "香港": "xianggang",
+        "新疆": "xinjiang",
+        "西藏": "xizang",
+        "云南": "yunnan",
+        "浙江": "zhejiang",
+    };
+    // 地图名称映射集
+    var nameMap = {
+        /* 青海 */
+        "西宁市": "西宁",
+        "海北藏族自治州": "海北州",
+        /* 湖北 */
+        "恩施土家族苗族自治州": "恩施州",
+        /* 黑龙江 */
+        "大兴安岭地区": "大兴安岭",
+        /* 吉林 */
+        "延边朝鲜族自治州": "延边",
+        /* 内蒙古 */
+        "锡林郭勒盟": "锡林郭勒市",
+        /* 甘肃 */
+        "临夏回族自治州": "临夏州",
+        "甘南藏族自治州": "甘南州",
+        /* 新疆 */
+        "巴音郭楞蒙古自治州": "巴州",
+        "伊犁哈萨克自治州": "伊犁州",
+        "昌吉回族自治州": "昌吉州",
+        "喀什地区": "喀什",
+        /* 四川 */
+        "凉山彝族自治州": "凉山州",
+        "阿坝藏族羌族自治州": "阿坝州",
+        "甘孜藏族自治州": "甘孜州",
+        /* 云南 */
+        "红河哈尼族彝族自治州": "红河州",
+        "文山壮族苗族自治州": "文山州",
+        "西双版纳傣族自治州": "西双版纳",
+        "楚雄彝族自治州": "楚雄州",
+        "大理白族自治州": "大理州",
+        "德宏傣族景颇族自治州": "德宏州",
+        "湘西土家族苗族自治州": "湘西自治州",
+        /* 贵州 */
+        "黔西南布依族苗族自治州": "黔西南州",
+        "黔东南苗族侗族自治州": "黔东南州",
+        "黔南布依族苗族自治州": "黔南州",
+        /* 重庆 */
+        "秀山土家族苗族自治县": "秀山县",
+        "酉阳土家族苗族自治县": "酉阳县",
+        "彭水苗族土家族自治县": "彭水县",
+        "石柱土家族自治县": "石柱县",
+    };
+
+    // 特殊地名，这些地名不加市
+    var tsdm = ["海北州", "恩施州", "临夏州", "甘南州", "巴州", "伊犁州", "昌吉州", "凉山州", "阿坝州", "甘孜州", "红河州", "文山州", "楚雄州", "大理州", "德宏州", "湘西自治州", "黔西南州", "黔东南州", "黔南州"];
+    var tsdm2 = ["喀什", "延边", "大兴安岭", "西宁", "西双版纳"]
+    // 城市数据
+    var cityInfo = [];
+    var infoList = [];
+    cityList.forEach(element => {
+        if (cityName === element.name) {
+            infoList = element.city;
+            infoList.forEach(element => {
+                var name = element.name;
+                // 对json里的数据做尽可能格式处理，以便能够匹配地图名称
+                if (cityName === "重庆") {
+
+                    var cqtsCity = ["城口", "巫溪", "巫山", "奉节", "石柱", "云阳", "垫江", "丰都", "彭水", "酉阳", "秀山"];
+                    if (cqtsCity.indexOf(name) != -1) {
+                        name = name.substr(0, 2);
+                        name = name + "县";
+                    } else if (name === "忠县") {
+                        name = name;
+                    } else {
+                        name = name + "区";
+                    }
+                    console.log(name);
+                } else {
+                    if (name.charAt(name.length - 1) != '州' && name.charAt(name.length - 1) != '区' && cityName != "河南" && cityName != "湖南") {
+                        if (tsdm2.indexOf(name) == -1) {
+                            name = name + "市";
+                        }
+                    }
+                    else if (name.charAt(name.length - 1) === '州' && tsdm.indexOf(name) == -1) {
+                        name = name + "市";
+                    }
+                }
+                cityInfo.push({
+                    name: name,
+                    value: element.conNum
+                });
+            });
+        };
+    });
+    // 一定不能使用../cityMap/xx.json 这种路径，破tomcat会识别路径错误
+    $.get(document.URL+'/cityMap/' + city_name[cityName] + '.json', function (geoJson) {
+        var myChart = echarts.init(document.getElementById("CityMap"));
+        myChart.hideLoading();
+        echarts.registerMap(city_name[cityName], geoJson);
+        console.log(2);
+        var option = {
+            backgroundColor: '#fff',
+            title: {
+                text: cityName,
+                textStyle : {
+                    color: "#4D79F3"
+                }
+            },
+            tooltip: {
+                show: 'true',
+                trigger: 'item',
+                triggerOn: 'mousemove|click',
+                padding: 3,
+                borderColor: '#333',
+                enterable: true,
+                backgroundColor: 'rgba(50,50,50,0.7)',
+                textStyle: {
+                    color: '#fff',
+                },
+                formatter: function (param) {
+                    if (isNaN(param.value)) param.value = 0;
+                    return `<section style="display: flex; align - items: center; position: relative; z - index: 9999; ">
+                                        <div> 地区:${param.name}<br>确诊:${param.value}</div>
+                                    </section >`;
+                }
+            },
+            grid: {
+                x: "10%",
+                x2: "10%",
+                y: "10%",
+                y2: "10%"
+            },
+            visualMap: [
+                {
+                    type: 'piecewise',
+                    pieces: [
+                        { min: 0, max: 0, label: '0', },
+                        { min: 1, max: 9, label: '1-9' },
+                        { min: 10, max: 99, label: '10-99' },
+                        { min: 100, max: 999, label: '100-999' },
+                        { min: 1000, max: 9999, label: '1000-9999' },
+                        { min: 10000, label: '≥10000' },
+                    ],
+                    itemWidth: 10,
+                    itemHeight: 10,
+                    itemGap: 2,
+                    inverse: false
+                }
+            ],
+            geo: {
+                map: city_name[cityName],
+                roam: true,
+                show: 'true',
+                zoom: 1.2,
+                label: {
+                    show: true,
+                },
+                scaleLimit: { //滚轮缩放的极限控制
+                    min: 1,
+                    max: 3
+                },
+                itemStyle: {
+                    areaColor: '#fff',
+                    borderWidth: 0.5,
+                }
+            },
+            nameMap: nameMap,
+            series: [
+                {
+                    type: 'map',
+                    geoIndex: 0,
+                    data: cityInfo
+                }
+            ]
+        }
+        myChart.clear();
+        myChart.setOption(option);
     })
 }
