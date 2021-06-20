@@ -70,6 +70,7 @@ $.ajax(ajax_Options);
 function main(){
     $.ajax(ajax_Options);
 }
+// 设置每隔5分钟提交一次Ajax请求 刷新一次数据
 setInterval(main,1000*60*30);
 
 // 中国疫情信息栏
