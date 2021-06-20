@@ -1,5 +1,4 @@
-// JQuery的Ajax请求方式
-$.ajax({
+var ajax_Options = {
     // 新浪的疫情数据接口 返回的是jsonp格式的数据
     url: "https://news.sina.com.cn/project/fymap/ncp2020_full_data.json",
     dataType: "jsonp",
@@ -7,7 +6,7 @@ $.ajax({
     success: function (response) {
         // 获取数据
         var allData = response.data;
-        console.log(allData);
+        // console.log(allData);
         // 设置数据的获取时间
         var cachetime = allData.cachetime;
         $('.time span').html(cachetime);
@@ -45,15 +44,14 @@ $.ajax({
                 dataType: "json",
                 // async:false,
                 success: function (response) {
-                    console.log(response);
                     var newList = response;
                     var htmlStr = "";
                     console.log(newList);
                     newList.forEach(element => {
                         // element -> k-v
                         htmlStr += `
-                            <li><a href="${element['url']} target="view_window">${element['Content']}</a></li>
-                        `
+                                <li><a href="${element['url']}" target="_blank">${element['Content']}</a></li>
+                            `
                     });
                     $('.newList > ul').html(htmlStr);
                     // 新闻列表滚动动效
@@ -65,10 +63,14 @@ $.ajax({
         // 省份疫情数据展示
         (function () {
             showCity(echarts.init(document.getElementById('map')), allData);
-            // initCityMap("北京");
         })();
     }
-})
+}
+$.ajax(ajax_Options);
+function main(){
+    $.ajax(ajax_Options);
+}
+setInterval(main,1000*60*30);
 
 // 中国疫情信息栏
 function showChinaInfo(allData) {
@@ -138,8 +140,8 @@ function showWorldInfo(allData) {
     // 获取前一天的世界疫情信息
     var otherHistory = allData.otherhistorylist;
 
-    console.log(otherTotal);
-    console.log(otherHistory);
+    // console.log(otherTotal);
+    // console.log(otherHistory);
     // 配置对象
     var infoConfig = {
         "certain": {
@@ -281,30 +283,54 @@ function showLine(allData) {
 
 // 饼图
 function showPie(allData) {
+
+    // 或缺全国现有确诊信息
+    var info = allData.currenteconinfo;
+    // cn_current_jwsrNum->境外输入,cn_gat_econNum->港澳台,cn_province_econNum->本土病例,econNum->全国当前病例总数
+    var cn_current_jwsrNum, cn_gat_econNum, cn_province_econNum, econNum;
+
+    cn_current_jwsrNum = info['cn_current_jwsrNum'];
+    cn_gat_econNum = info['cn_gat_econNum'];
+    cn_province_econNum = info['cn_province_econNum'];
+    econNum = info['econNum'];
+
     var chartDom = document.getElementById('pie');
     var pie = echarts.init(chartDom);
+    var subtext = "全国现有确诊";
     var option;
 
     option = {
+        title: {
+            text: '全国现有确诊构成',
+            left: 'center',
+            textStyle: {
+                color: "#4D79F3"
+            }
+        },
+        tooltip: {
+            trigger: 'item'
+        },
         legend: {
-            top: 'bottom'
+            // orient: 'vertical',
+            bottom: '5'
         },
         series: [
             {
-                name: '面积模式',
+                name: '确诊人数',
                 type: 'pie',
-                radius: [0, 50],
-                center: ['50%', '50%'],
-                roseType: 'area',
-                itemStyle: {
-                    borderRadius: 8
-                },
+                radius: '50%',
                 data: [
-                    { value: 40, name: '数据1' },
-                    { value: 38, name: '数据2' },
-                    { value: 32, name: '数据3' },
-                    { value: 30, name: '数据4' },
-                ]
+                    { value: cn_province_econNum, name: '本土病例' },
+                    { value: cn_current_jwsrNum, name: '境外输入' },
+                    { value: cn_gat_econNum, name: '港澳台病例' },
+                ],
+                emphasis: {
+                    itemStyle: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
             }
         ]
     };
@@ -346,7 +372,10 @@ function showBar(allData) {
         title: {
             text: '境外输入人数地区TOP5',
             left: 'center',
-            top: 10
+            top: 10,
+            textStyle: {
+                color: "#4D79F3"
+            }
         },
         grid: {
             left: 50,
@@ -780,7 +809,7 @@ function showCity(mapDom, allData) {
 
     // 获取所有的省份以及省份的疫情数据
     var cityList = allData.list;
-    initCityMap("甘肃",cityList);
+    initCityMap("甘肃", cityList);
     // 中国大地图的点击事件
     mapDom.on('click', function (params) {
         // 点击的省份
@@ -886,7 +915,7 @@ function initCityMap(cityName, cityList) {
                 if (cityName === "重庆") {
 
                     var cqtsCity = ["城口", "巫溪", "巫山", "奉节", "石柱", "云阳", "垫江", "丰都", "彭水", "酉阳", "秀山"];
-                    if (cqtsCity.indexOf(name) != -1) {
+                    if (cqtsCity.indexOf(name) !== -1) {
                         name = name.substr(0, 2);
                         name = name + "县";
                     } else if (name === "忠县") {
@@ -894,14 +923,14 @@ function initCityMap(cityName, cityList) {
                     } else {
                         name = name + "区";
                     }
-                    console.log(name);
+                    // console.log(name);
                 } else {
-                    if (name.charAt(name.length - 1) != '州' && name.charAt(name.length - 1) != '区' && cityName != "河南" && cityName != "湖南") {
-                        if (tsdm2.indexOf(name) == -1) {
+                    if (name.charAt(name.length - 1) !== '州' && name.charAt(name.length - 1) !== '区' && cityName !== "河南" && cityName !== "湖南") {
+                        if (tsdm2.indexOf(name) === -1) {
                             name = name + "市";
                         }
                     }
-                    else if (name.charAt(name.length - 1) === '州' && tsdm.indexOf(name) == -1) {
+                    else if (name.charAt(name.length - 1) === '州' && tsdm.indexOf(name) === -1) {
                         name = name + "市";
                     }
                 }
@@ -913,16 +942,16 @@ function initCityMap(cityName, cityList) {
         };
     });
     // 一定不能使用../cityMap/xx.json 这种路径，破tomcat会识别路径错误
-    $.get(document.URL+'/cityMap/' + city_name[cityName] + '.json', function (geoJson) {
+    $.get(document.URL + '/cityMap/' + city_name[cityName] + '.json', function (geoJson) {
         var myChart = echarts.init(document.getElementById("CityMap"));
         myChart.hideLoading();
         echarts.registerMap(city_name[cityName], geoJson);
-        console.log(2);
+        // console.log(2);
         var option = {
             backgroundColor: '#fff',
             title: {
                 text: cityName,
-                textStyle : {
+                textStyle: {
                     color: "#4D79F3"
                 }
             },
