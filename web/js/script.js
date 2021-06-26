@@ -942,7 +942,7 @@ function initCityMap(cityName, cityList) {
         };
     });
     // 一定不能使用../cityMap/xx.json 这种路径，破tomcat会识别路径错误
-    $.get(document.URL + '/cityMap/' + city_name[cityName] + '.json', function (geoJson) {
+    $.get('../cityMap/' + city_name[cityName] + '.json', function (geoJson) {
         var myChart = echarts.init(document.getElementById("CityMap"));
         myChart.hideLoading();
         echarts.registerMap(city_name[cityName], geoJson);

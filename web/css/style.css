@@ -41,11 +41,28 @@ header h1 {
 header .showTime {
   position: absolute;
   top: 0;
-  right: 0.625rem;
+  left: 0.625rem;
   line-height: 1rem;
   text-align: center;
-  font-size: 0.2 0.5rem;
+  font-size: 0.3rem;
   color: #777;
+}
+header .myBlog {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  line-height: 1rem;
+  text-align: center;
+  font-size: 0.3rem;
+}
+header .myBlog a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #777;
+  transition: 0.5s ease-in-out;
+}
+header .myBlog a:hover {
+  color: #4D79F3;
 }
 .content {
   display: flex;
