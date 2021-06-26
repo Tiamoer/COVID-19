@@ -810,6 +810,7 @@ function showCity(mapDom, allData) {
 
     // 获取所有的省份以及省份的疫情数据
     var cityList = allData.list;
+    // 默认加载甘肃疫情数据
     initCityMap("甘肃", cityList);
     // 中国大地图的点击事件
     mapDom.on('click', function (params) {
