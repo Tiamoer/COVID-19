@@ -8,6 +8,7 @@
   src: url(../font/DS-DIGIT.TTF);
 }
 ::-webkit-scrollbar {
+  display: none;
   width: 10px;
   height: 10px;
   border-radius: 10px;
@@ -98,6 +99,7 @@ header .myBlog a:hover {
   padding-right: 0.125rem;
   padding-left: 0.125rem;
   background-color: antiquewhite;
+  overflow: hidden;
 }
 .content .new .newTitle {
   padding-top: 0.0625rem;
