@@ -5,10 +5,10 @@ var ajax_Options = {
     jsonpCallback: 'jsoncallback',
     success: function (response) {
         // 获取数据
-        var allData = response.data;
+        const allData = response.data;
         // console.log(allData);
         // 设置数据的获取时间
-        var cachetime = allData.cachetime;
+        const cachetime = allData.cachetime;
         $('.time span').html(cachetime);
         // 折线图-
         showLine(allData);
@@ -40,12 +40,12 @@ var ajax_Options = {
         (function () {
             $.ajax({
                 type: "GET",
-                url: "newsServlet",
+                url: "NewsServlet",
                 dataType: "json",
                 // async:false,
                 success: function (response) {
-                    var newList = response;
-                    var htmlStr = "";
+                    const newList = response;
+                    let htmlStr = "";
                     console.log(newList);
                     newList.forEach(element => {
                         // element -> k-v
@@ -77,9 +77,9 @@ setInterval(main,1000*60*30);
 function showChinaInfo(allData) {
     $('.info').empty();
     $('#info_title').text("全国(含港澳台)");
-    var historyList = allData.historylist;
+    const historyList = allData.historylist;
     // 配置对象
-    var infoConfig = {
+    const infoConfig = {
         "cn_econNum": {
             "title": "现有确诊",
             "color": "#ff3535"
@@ -112,10 +112,10 @@ function showChinaInfo(allData) {
             "title": "累计确诊",
             "color": "#B10000"
         },
-    }
-    var htmlStr = "";
-    for (var k in infoConfig) {
-        var temp = historyList[0][k] - historyList[1][k];
+    };
+    let htmlStr = "";
+    for (const k in infoConfig) {
+        const temp = historyList[0][k] - historyList[1][k];
         htmlStr += `
         <div class="info_item">
             <h5 style="color: ${infoConfig[k].color}">${infoConfig[k].title}</h5>
@@ -144,7 +144,7 @@ function showWorldInfo(allData) {
     // console.log(otherTotal);
     // console.log(otherHistory);
     // 配置对象
-    var infoConfig = {
+    const infoConfig = {
         "certain": {
             "title": "累计确诊",
             "color": "#B10000"
@@ -157,10 +157,10 @@ function showWorldInfo(allData) {
             "title": "累计治愈",
             "color": "#13B593"
         }
-    }
-    var htmlStr = "";
-    for (var k in infoConfig) {
-        var temp = 0;
+    };
+    let htmlStr = "";
+    for (const k in infoConfig) {
+        let temp = 0;
         if (k === "recure") {
             temp = otherTotal[k] - otherHistory[0]["recure"];
         } else {
@@ -187,8 +187,8 @@ function showWorldInfo(allData) {
 function showLine(allData) {
 
     // 获取世界疫情信息
-    var worldInfo = allData.otherhistorylist;
-    var date, certain = [], die = [], recure = [];
+    const worldInfo = allData.otherhistorylist;
+    let date, certain = [], die = [], recure = [];
     // 遍历获取日期、感染人数、死亡人数、治愈人数
     worldInfo.forEach(element => {
         date = element.date.replace(".", "-").replace(".", "-");
@@ -203,9 +203,9 @@ function showLine(allData) {
     recure.reverse();
 
     // 图表配置
-    var chartDom = document.getElementById('line');
-    var myChart = echarts.init(chartDom);
-    var option = {
+    const chartDom = document.getElementById('line');
+    const myChart = echarts.init(chartDom);
+    const option = {
         tooltip: {
             trigger: 'axis'
         },
@@ -286,19 +286,19 @@ function showLine(allData) {
 function showPie(allData) {
 
     // 或缺全国现有确诊信息
-    var info = allData.currenteconinfo;
+    const info = allData.currenteconinfo;
     // cn_current_jwsrNum->境外输入,cn_gat_econNum->港澳台,cn_province_econNum->本土病例,econNum->全国当前病例总数
-    var cn_current_jwsrNum, cn_gat_econNum, cn_province_econNum, econNum;
+    let cn_current_jwsrNum, cn_gat_econNum, cn_province_econNum, econNum;
 
     cn_current_jwsrNum = info['cn_current_jwsrNum'];
     cn_gat_econNum = info['cn_gat_econNum'];
     cn_province_econNum = info['cn_province_econNum'];
     econNum = info['econNum'];
 
-    var chartDom = document.getElementById('pie');
-    var pie = echarts.init(chartDom);
-    var subtext = "全国现有确诊";
-    var option;
+    const chartDom = document.getElementById('pie');
+    const pie = echarts.init(chartDom);
+    const subtext = "全国现有确诊";
+    let option;
 
     option = {
         title: {
@@ -342,15 +342,15 @@ function showPie(allData) {
 // 柱状图
 function showBar(allData) {
     // 获取境外输入派上榜信息
-    var jwsr_data = allData.jwsrTop;
+    const jwsr_data = allData.jwsrTop;
     // 字典存数据据
-    var jwsrName = [];
-    var jwsrValue = [];
+    const jwsrName = [];
+    const jwsrValue = [];
     // 境外输入总人数
     // var jwsrconNum = allData.historylist[0]['cn_jwsrNum']
     // jwsrName.push("总输入");
     // jwsrValue.push(jwsrconNum);
-    var i = 1;
+    let i = 1;
     try {
         jwsr_data.forEach(element => {
             if (i <= 5) {
@@ -363,13 +363,13 @@ function showBar(allData) {
         });
     } catch (error) {
         if (error.message !== "EndIterative") throw error;
-    };
+    }
     // 倒置两个数组元素的顺序
     jwsrName.reverse();
     jwsrValue.reverse();
     // 图表设置
-    var jwsrTop = echarts.init(document.getElementById('jwsr_top'));
-    var option = {
+    const jwsrTop = echarts.init(document.getElementById('jwsr_top'));
+    const option = {
         title: {
             text: '境外输入人数地区TOP5',
             left: 'center',
@@ -410,23 +410,23 @@ function showBar(allData) {
                 }
             }
         ]
-    }
+    };
     jwsrTop.setOption(option);
 }
 
 // 中国疫情地图
 function showChinaMap(allData) {
-    var list = allData.list;
+    const list = allData.list;
     // echarts的初始化语句
-    var mapDom = echarts.init(document.getElementById('map'));
+    const mapDom = echarts.init(document.getElementById('map'));
     // 让图表跟随父div的大小变化而变化
     window.addEventListener("resize", function () {
         mapDom.resize();
     });
     // 中国今天疫情
-    var nowList = [];
+    const nowList = [];
     // 中国历史疫情数据
-    var allList = [];
+    const allList = [];
     list.forEach(element => {
         nowList.push({
             name: element.name,
@@ -438,7 +438,7 @@ function showChinaMap(allData) {
         });
     });
     // echarts配置项
-    var china_option = {
+    const china_option = {
         backgroundColor: '#fff',
         // 悬浮窗
         tooltip: {
@@ -462,12 +462,12 @@ function showChinaMap(allData) {
             {
                 type: 'piecewise',
                 pieces: [
-                    { min: 0, max: 0, label: '0' },
-                    { min: 1, max: 9, label: '1-9' },
-                    { min: 10, max: 99, label: '10-99' },
-                    { min: 100, max: 999, label: '100-999' },
-                    { min: 1000, max: 9999, label: '1000-9999' },
-                    { min: 10000, label: '≥10000' },
+                    {min: 0, max: 0, label: '0'},
+                    {min: 1, max: 9, label: '1-9'},
+                    {min: 10, max: 99, label: '10-99'},
+                    {min: 100, max: 999, label: '100-999'},
+                    {min: 1000, max: 9999, label: '1000-9999'},
+                    {min: 10000, label: '≥10000'},
                 ],
                 itemWidth: 10,
                 itemHeight: 10,
@@ -496,7 +496,7 @@ function showChinaMap(allData) {
                 data: nowList
             }
         ]
-    }
+    };
     // 为了防止多个图表之间造成数据混淆和配置混淆，在使用一个新的图表前，清除前面图表的缓存
     mapDom.clear();
     mapDom.setOption(china_option);
@@ -505,13 +505,13 @@ function showChinaMap(allData) {
 // 世界疫情地图
 function showWorldMap(allData) {
     // 地图Dom
-    var mapDom = echarts.init(document.getElementById('map'));
+    const mapDom = echarts.init(document.getElementById('map'));
     window.addEventListener("resize", function () {
         mapDom.resize();
     });
     // 世界疫情
-    var otherAllData = allData.otherlist;
-    var otherList = [];
+    const otherAllData = allData.otherlist;
+    const otherList = [];
     otherAllData.forEach(element => {
         otherList.push({
             name: element.name,
@@ -524,7 +524,7 @@ function showWorldMap(allData) {
         value: allData.historylist[0]["cn_conNum"]
     });
     // 地图名称映射集 
-    var nameMap = {
+    const nameMap = {
         "Afghanistan": "阿富汗",
         "Albania": "阿尔巴尼亚",
         "Algeria": "阿尔及利亚",
@@ -714,9 +714,9 @@ function showWorldMap(allData) {
         "Zaire": "扎伊尔",
         "Zambia": "赞比亚",
         "Zimbabwe": "津巴布韦"
-    }
+    };
 
-    var world_option = {
+    const world_option = {
         backgroundColor: '#fff',
         tooltip: {
             show: 'true',
@@ -739,11 +739,11 @@ function showWorldMap(allData) {
             {
                 type: 'piecewise',
                 pieces: [
-                    { min: 0, max: 9999, label: '0-1万' },
-                    { min: 10000, max: 99999, label: '1万-10万' },
-                    { min: 100000, max: 999999, label: '10万-100万' },
-                    { min: 1000000, max: 9999999, label: '100万-1000万' },
-                    { min: 10000000, label: '≥1000万' }
+                    {min: 0, max: 9999, label: '0-1万'},
+                    {min: 10000, max: 99999, label: '1万-10万'},
+                    {min: 100000, max: 999999, label: '10万-100万'},
+                    {min: 1000000, max: 9999999, label: '100万-1000万'},
+                    {min: 10000000, label: '≥1000万'}
                 ],
                 itemWidth: 10,
                 itemHeight: 10,
@@ -776,15 +776,15 @@ function showWorldMap(allData) {
                 data: otherList
             }
         ]
-    }
+    };
     mapDom.clear();
     mapDom.setOption(world_option);
 }
 
 // 新闻列表滚动
 function newsStyle() {
-    var $this = $(".newList");
-    var scrollTimer;
+    const $this = $(".newList");
+    let scrollTimer;
     $this.hover(function () {
         clearInterval(scrollTimer);
     }, function () {
@@ -794,8 +794,8 @@ function newsStyle() {
     }).trigger("mouseleave");
 }
 function scrollNews(obj) {
-    var $self = obj.find("ul");
-    var lineHeight = $self.find("li:first").height();
+    const $self = obj.find("ul");
+    const lineHeight = $self.find("li:first").height();
     $self.animate({
         "marginTop": -lineHeight + 'px'
     }, 600, function () {
@@ -809,20 +809,20 @@ function scrollNews(obj) {
 function showCity(mapDom, allData) {
 
     // 获取所有的省份以及省份的疫情数据
-    var cityList = allData.list;
+    const cityList = allData.list;
     // 默认加载甘肃疫情数据
     initCityMap("甘肃", cityList);
     // 中国大地图的点击事件
     mapDom.on('click', function (params) {
         // 点击的省份
-        var chooseCity = params.name;
+        const chooseCity = params.name;
         initCityMap(chooseCity, cityList);
     })
 }
 
 function initCityMap(cityName, cityList) {
     // 地名与文件名映射表
-    var city_name = {
+    const city_name = {
         "安徽": "anhui",
         "澳门": "aomen",
         "北京": "beijing",
@@ -859,7 +859,7 @@ function initCityMap(cityName, cityList) {
         "浙江": "zhejiang",
     };
     // 地图名称映射集
-    var nameMap = {
+    const nameMap = {
         /* 青海 */
         "西宁市": "西宁",
         "海北藏族自治州": "海北州",
@@ -903,20 +903,20 @@ function initCityMap(cityName, cityList) {
     };
 
     // 特殊地名，这些地名不加市
-    var tsdm = ["海北州", "恩施州", "临夏州", "甘南州", "巴州", "伊犁州", "昌吉州", "凉山州", "阿坝州", "甘孜州", "红河州", "文山州", "楚雄州", "大理州", "德宏州", "湘西自治州", "黔西南州", "黔东南州", "黔南州"];
-    var tsdm2 = ["喀什", "延边", "大兴安岭", "西宁", "西双版纳"]
+    const tsdm = ["海北州", "恩施州", "临夏州", "甘南州", "巴州", "伊犁州", "昌吉州", "凉山州", "阿坝州", "甘孜州", "红河州", "文山州", "楚雄州", "大理州", "德宏州", "湘西自治州", "黔西南州", "黔东南州", "黔南州"];
+    const tsdm2 = ["喀什", "延边", "大兴安岭", "西宁", "西双版纳"];
     // 城市数据
-    var cityInfo = [];
-    var infoList = [];
+    const cityInfo = [];
+    let infoList = [];
     cityList.forEach(element => {
         if (cityName === element.name) {
             infoList = element.city;
             infoList.forEach(element => {
-                var name = element.name;
+                let name = element.name;
                 // 对json里的数据做尽可能格式处理，以便能够匹配地图名称
                 if (cityName === "重庆") {
 
-                    var cqtsCity = ["城口", "巫溪", "巫山", "奉节", "石柱", "云阳", "垫江", "丰都", "彭水", "酉阳", "秀山"];
+                    const cqtsCity = ["城口", "巫溪", "巫山", "奉节", "石柱", "云阳", "垫江", "丰都", "彭水", "酉阳", "秀山"];
                     if (cqtsCity.indexOf(name) !== -1) {
                         name = name.substr(0, 2);
                         name = name + "县";
@@ -945,11 +945,11 @@ function initCityMap(cityName, cityList) {
     });
     // 一定不能使用../cityMap/xx.json 这种路径，破tomcat会识别路径错误
     $.get(document.URL+'/cityMap/' + city_name[cityName] + '.json', function (geoJson) {
-        var myChart = echarts.init(document.getElementById("CityMap"));
+        const myChart = echarts.init(document.getElementById("CityMap"));
         myChart.hideLoading();
         echarts.registerMap(city_name[cityName], geoJson);
         // console.log(2);
-        var option = {
+        const option = {
             backgroundColor: '#fff',
             title: {
                 text: cityName,
@@ -985,12 +985,12 @@ function initCityMap(cityName, cityList) {
                 {
                     type: 'piecewise',
                     pieces: [
-                        { min: 0, max: 0, label: '0', },
-                        { min: 1, max: 9, label: '1-9' },
-                        { min: 10, max: 99, label: '10-99' },
-                        { min: 100, max: 999, label: '100-999' },
-                        { min: 1000, max: 9999, label: '1000-9999' },
-                        { min: 10000, label: '≥10000' },
+                        {min: 0, max: 0, label: '0',},
+                        {min: 1, max: 9, label: '1-9'},
+                        {min: 10, max: 99, label: '10-99'},
+                        {min: 100, max: 999, label: '100-999'},
+                        {min: 1000, max: 9999, label: '1000-9999'},
+                        {min: 10000, label: '≥10000'},
                     ],
                     itemWidth: 10,
                     itemHeight: 10,
@@ -1023,7 +1023,7 @@ function initCityMap(cityName, cityList) {
                     data: cityInfo
                 }
             ]
-        }
+        };
         myChart.clear();
         myChart.setOption(option);
     })
