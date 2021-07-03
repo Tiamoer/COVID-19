@@ -2,7 +2,10 @@ package com.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
-public class newsModel {
+/**
+ * @author 自清闲
+ */
+public class NewsModel {
     @JSONField(name = "ID",serialize = false)
     private int newsID;
     @JSONField(name = "Date",ordinal = 1)

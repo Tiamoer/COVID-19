@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * @author 自清闲
+ */
 public class DbRegister {
 
-    private static final String dbDriver;
-    private static final String dbUrl;
-    private static final String dbUser;
-    private static final String dbPwd;
+    private static final String DB_DRIVER;
+    private static final String DB_URL;
+    private static final String DB_USER;
+    private static final String DB_PWD;
 
     static {
         Properties properties = new Properties();
@@ -19,25 +22,25 @@ public class DbRegister {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        dbDriver = properties.getProperty("dbDriver");
-        dbUrl = properties.getProperty("dbURL");
-        dbUser = properties.getProperty("dbUser");
-        dbPwd = properties.getProperty("dbPwd");
+        DB_DRIVER = properties.getProperty("dbDriver");
+        DB_URL = properties.getProperty("dbURL");
+        DB_USER = properties.getProperty("dbUser");
+        DB_PWD = properties.getProperty("dbPwd");
     }
 
     public static String getDbDriver() {
-        return dbDriver;
+        return DB_DRIVER;
     }
 
     public static String getDbUrl() {
-        return dbUrl;
+        return DB_URL;
     }
 
     public static String getDbUser() {
-        return dbUser;
+        return DB_USER;
     }
 
     public static String getDbPwd() {
-        return dbPwd;
+        return DB_PWD;
     }
 }

@@ -5,8 +5,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/*
-    连接数据库
+/**
+ * @author 自清闲
  */
 public class ConDB {
 

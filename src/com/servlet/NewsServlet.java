@@ -1,6 +1,6 @@
 package com.servlet;
 
-import com.service.newsService;
+import com.service.NewsService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,8 +11,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
-@WebServlet(name = "newsServlet", urlPatterns = "/newsServlet")
-public class newsServlet extends HttpServlet {
+/**
+ * @author 自清闲
+ */
+@WebServlet(name = "NewsServlet", urlPatterns = "/NewsServlet")
+public class NewsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
@@ -24,7 +27,7 @@ public class newsServlet extends HttpServlet {
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json");
         try {
-            String json = newsService.getNewsJsonToString();
+            String json = NewsService.getNewsJsonToString();
             pw.write(json);
             pw.flush();
             pw.close();

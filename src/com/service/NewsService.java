@@ -6,21 +6,27 @@ package com.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dao.ConDB;
-import com.model.newsModel;
+import com.model.NewsModel;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class newsService {
+/**
+ * @author 自清闲
+ */
+public class NewsService {
     public static String getNewsJsonToString() throws SQLException, ClassNotFoundException {
-        List<newsModel> newList = new ArrayList<>();
+        List<NewsModel> newList = new ArrayList<>();
         Connection connection = ConDB.getCon();
         String sql = "select * from BauDuHot.hotsearch";
         Statement ps = connection.createStatement();
         ResultSet rs = ps.executeQuery(sql);
         while (rs.next()) {
-            newsModel news = new newsModel();
+            NewsModel news = new NewsModel();
             news.setNewsID(rs.getInt(1));
             news.setNewsDT(rs.getString(2));
             news.setNewsContent(rs.getString(3));
